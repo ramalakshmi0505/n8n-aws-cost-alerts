@@ -1,0 +1,119 @@
+{
+  "name": "AWS Cost Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "id": "trigger-1"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Invoke AWS Lambda to get cost data\nconst AWS = require('aws-sdk');\nconst lambda = new AWS.Lambda({ region: 'eu-west-1' });\n\nconst params = {\n  FunctionName: process.env.LAMBDA_FUNCTION_NAME,\n  InvocationType: 'RequestResponse'\n};\n\nconst result = await lambda.invoke(params).promise();\nconst data = JSON.parse(result.Payload);\nconst body = JSON.parse(data.body);\n\nreturn [{ json: body }];"
+      },
+      "name": "Get AWS Costs",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "id": "function-1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.exceeds_threshold}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Cost Exceeds Threshold?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "id": "if-1"
+    },
+    {
+      "parameters": {
+        "content": "🚨 *AWS Cost Alert*\\n\\n*Date:* {{$json.date}}\\n*Total Cost:* ${{$json.total_cost}}\\n*Threshold:* ${{$json.threshold}}\\n\\n*Top Services:*\\n{{$json.top_services.map(s => `• ${s.service}: $${s.cost}`).join('\\n')}}\\n\\n_Automated alert from n8n on EKS_",
+        "options": {}
+      },
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack Account"
+        }
+      },
+      "id": "slack-1"
+    },
+    {
+      "parameters": {},
+      "name": "No Alert Needed",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [850, 400],
+      "id": "noop-1"
+    }
+  ],
+  "connections": {
+    "Daily Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get AWS Costs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get AWS Costs": {
+      "main": [
+        [
+          {
+            "node": "Cost Exceeds Threshold?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cost Exceeds Threshold?": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Alert Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Europe/Amsterdam"
+  }
+}

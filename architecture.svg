@@ -1,0 +1,67 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+<title>n8n on AWS EKS Architecture</title>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#0C447C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<style>
+.th { font-family: sans-serif; font-size: 14px; font-weight: 500; fill: #111111; }
+.ts { font-family: sans-serif; font-size: 12px; fill: #555555; }
+.arr { stroke: #888780; stroke-width: 1.5; fill: none; }
+</style>
+</defs>
+
+<!-- AWS Cloud Container -->
+<rect x="40" y="30" width="600" height="380" rx="16" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text class="th" x="340" y="58" text-anchor="middle">AWS Cloud</text>
+
+<!-- VPC Container -->
+<rect x="70" y="80" width="540" height="300" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text class="th" x="340" y="106" text-anchor="middle">VPC</text>
+
+<!-- EKS Cluster Container -->
+<rect x="100" y="130" width="240" height="220" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text class="th" x="220" y="156" text-anchor="middle">EKS Cluster</text>
+
+<!-- n8n Pod -->
+<rect x="130" y="180" width="180" height="56" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text class="th" x="220" y="202" text-anchor="middle">n8n</text>
+<text class="ts" x="220" y="220" text-anchor="middle">Workflow automation</text>
+
+<!-- Kubernetes labels -->
+<text class="ts" x="220" y="264" text-anchor="middle">Kubernetes Deployment</text>
+<text class="ts" x="220" y="280" text-anchor="middle">Persistent Volume</text>
+
+<!-- Lambda Function -->
+<rect x="390" y="200" width="190" height="56" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text class="th" x="485" y="222" text-anchor="middle">Lambda Function</text>
+<text class="ts" x="485" y="240" text-anchor="middle">Cost Explorer API</text>
+
+<!-- Terraform Module label -->
+<text class="ts" x="220" y="320" text-anchor="middle">Terraform IaC</text>
+
+<!-- Arrow from n8n to Lambda -->
+<line x1="310" y1="208" x2="388" y2="228" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="350" y="212" text-anchor="middle">Triggers</text>
+
+<!-- External: Slack -->
+<rect x="120" y="440" width="160" height="56" rx="6" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text class="th" x="200" y="462" text-anchor="middle">Slack</text>
+<text class="ts" x="200" y="480" text-anchor="middle">Alert notifications</text>
+
+<!-- External: AWS Cost Explorer -->
+<rect x="400" y="440" width="190" height="56" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text class="th" x="495" y="462" text-anchor="middle">AWS Cost Explorer</text>
+<text class="ts" x="495" y="480" text-anchor="middle">Daily cost data</text>
+
+<!-- Arrow from n8n to Slack -->
+<line x1="200" y1="236" x2="200" y2="438" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="210" y="340" text-anchor="start">Sends alerts</text>
+
+<!-- Arrow from Lambda to Cost Explorer -->
+<line x1="495" y1="256" x2="495" y2="438" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="505" y="350" text-anchor="start">Fetches costs</text>
+
+<!-- Labels -->
+<text class="ts" x="480" y="300" text-anchor="start">Python script</text>
+</svg>
