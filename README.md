@@ -130,6 +130,29 @@ Edit `n8n-workflows/aws-cost-alert.json`:
 cd terraform
 terraform destroy
 ```
+## 🐳 Run Locally with Podman (Rootless)
+
+No Docker daemon needed! Run n8n locally using Podman.
+
+### Prerequisites
+- Podman installed (`podman --version`)
+
+### Steps
+```bash
+# Build and run
+chmod +x podman-run.sh
+./podman-run.sh
+
+# Access n8n
+open http://localhost:5678
+
+# Stop container
+podman stop n8n-aws-cost-alerts
+
+# View logs
+podman logs n8n-aws-cost-alerts
+```
+> Running rootless with Podman — no root, no daemon, production-safe! 🔐
 
 ## 📝 Blog Post
 
